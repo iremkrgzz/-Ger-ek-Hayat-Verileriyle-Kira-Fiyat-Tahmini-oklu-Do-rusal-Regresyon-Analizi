@@ -1,18 +1,48 @@
 # -Ger-ek-Hayat-Verileriyle-Kira-Fiyat-Tahmini-oklu-Do-rusal-Regresyon-Analizi
-Bu projede, İzmir’in Buca ilçesindeki kiralık evlere ait veriler kullanılarak kira fiyatlarını etkileyen faktörler çoklu doğrusal regresyon analizi ile incelenmiştir. Amaç, kira fiyatlarını etkileyen önemli değişkenleri belirlemek ve bu değişkenlerin etkisini istatistiksel olarak test ederek bir tahmin modeli geliştirmektir.
+#]REM KARAGVZ VZEL KONU
+#k|t|phaneler
+if (!require("car")) install.packages("car")  
+if (!require("ggplot2")) install.packages("ggplot2")  
 
-Analiz Süreci:
- • Veri seti Kaggle’dan alınmış, 138 gözlem ve 7 değişken içerir
- • Bağımlı değişken: price (kira fiyatı)
- • Bağımsız değişkenler: gross (brüt alan), num_rooms, building_age, furnishing_status, floor_type
- • Veriler grafiksel olarak incelenmiş, normallik ve varyans homojenliği testleri uygulanmıştır
- • Çoklu doğrusal regresyon modelleri kurularak model performansları karşılaştırılmış, en uygun model seçilmiştir
- • Modelde etkileşim terimleri (örneğin: gross:building_age) ve polinom terimler kullanılmış
- • Modelin açıklayıcılığı: Adjusted R² = %44.3, F-istatistiği anlamlı
- • En etkili faktörler: brüt alan, bina yaşı ve mobilya durumu
+library(car)
+library(ggplot2)
 
-Sonuçlar ve Öneriler:
-Model, kira fiyatı tahmininde başarılı sonuçlar vermiştir. Fiyatlar üzerinde brüt alanın ve mobilya durumunun pozitif etkisi, bina yaşının ise negatif etkisi gözlemlenmiştir. Modelin açıklayıcılığı orta düzeydedir; daha yüksek doğruluk için daha büyük ve çeşitli veri setleriyle çalışılması önerilir.
+#Veri
+data <- data.frame(
+  Y = c(18.9, 17, 20, 18.25, 20.07, 11.2, 22.12, 21.47, 34.7, 30.4),  # Galon Ba~}na Mil
+  X1 = c(350, 350, 250, 351, 225, 440, 231, 262, 89.7, 96.9),        # Motor Hacmi
+  X2 = c(165, 170, 105, 143, 95, 215, 110, 110, 70, 75)              # Beygir G|c|
+)
 
-Kullanılan Teknolojiler:
-R, ggplot2, car, stats, base R fonksiyonları
+#Goklu regresyon 
+model <- lm(Y ~ X1 + X2, data = data)
+
+summary(model)
+
+#ANOVA 
+anova_results <- anova(model)
+print(anova_results)
+
+#Hata deperleri igin normallik testi (Shapiro-Wilk Testi)
+residuals <- residuals(model)
+shapiro_test <- shapiro.test(residuals)
+print(shapiro_test)
+
+#Rezid|ler igin QQ grafipi 
+qqnorm(residuals)
+qqline(residuals, col = "red")
+
+#EKK  yvntemiyle grafik
+data$Predicted_Y <- predict(model)
+
+ggplot(data, aes(x = Predicted_Y, y = Y)) +
+  geom_point(color = "blue") +
+  geom_abline(intercept = 0, slope = 1, color = "red") +
+  labs(
+    title = "Gergek Deperler ve Tahmin Edilen Deperler",
+    x = "Tahmin Edilen Deperler",
+    y = "Gergek Deperler"
+  ) +
+  theme_minimal()
+
+
