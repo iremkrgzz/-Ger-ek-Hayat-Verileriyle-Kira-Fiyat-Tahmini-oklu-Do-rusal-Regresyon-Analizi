@@ -1,0 +1,1 @@
+# -Ger-ek-Hayat-Verileriyle-Kira-Fiyat-Tahmini-oklu-Do-rusal-Regresyon-Analizi
